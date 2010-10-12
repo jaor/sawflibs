@@ -24,7 +24,7 @@
               "Super-Space" 'next-tiling)
    #+END_SRC
 
-*** sawflibs.util
+** sawflibs.util
 
     Utility functions for rep programming.
 
