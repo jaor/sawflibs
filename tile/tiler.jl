@@ -14,7 +14,7 @@
     (let ((curr (assoc ws %tilers))
           (new (list tiler args auto)))
       (if (null curr)
-          (setq %tilers (cons (cons ws (list new) %tilers)))
+          (setq %tilers (cons (cons ws (list new)) %tilers))
         (setcdr curr (cons new (cdr curr))))))
 
   (define (next-tiling)
