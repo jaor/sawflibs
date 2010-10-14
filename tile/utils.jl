@@ -12,6 +12,7 @@
             scr-height
             scr-width
             push-window
+            resize-frame-to
             input-focus
             align-workspace-windows
             notify)
