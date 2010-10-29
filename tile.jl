@@ -3,10 +3,12 @@
     (export align-workspace-windows
             tile-workspace
             next-tiling
-            increase-max-windows
-            decrease-max-windows
+            col-tiling
             tall-tiling
-            col-tiling)
+            tall-rotate-left
+            tall-rotate-right
+            increase-max-windows
+            decrease-max-windows)
     (open rep
           rep.system
           sawflibs.tile.utils

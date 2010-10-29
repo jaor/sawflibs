@@ -1,6 +1,7 @@
 (define-structure sawflibs.tile.tiler
     (export tile-workspace
             register-workspace-tiler
+            current-tiler-name
             next-tiling
             setting
             set-setting)
@@ -36,9 +37,9 @@
     (list (lambda (a b)
             (restore-windows current-workspace))))
 
-  (define (register-workspace-tiler ws tiler args auto)
+  (define (register-workspace-tiler ws tiler args auto #!optional name)
     (let ((curr (assoc ws %tilers))
-          (new (list tiler args auto)))
+          (new (list tiler args auto name)))
       (if (null curr)
           (setq %tilers (cons (list ws new null-tiler) %tilers))
         (setcdr curr (cons new (cdr curr))))))
@@ -61,8 +62,11 @@
     (car (tilings ws)))
 
   (define (tiling-tiler ti) (nth 0 ti))
-  (define (tiling-auto-p ti) (nth 2 ti))
   (define (tiling-settings ti) (nth 1 ti))
+  (define (tiling-auto-p ti) (nth 2 ti))
+  (define (tiling-name ti) (nth 3 ti))
+
+  (define (current-tiler-name) (tiling-name (tiling)))
 
   (define (tile-workspace #!optional new-window destroyed-window)
     (interactive)

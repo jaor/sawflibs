@@ -14,6 +14,7 @@
             push-window
             resize-frame-to
             input-focus
+            focus-window
             align-workspace-windows
             notify)
     (open rep
@@ -29,7 +30,7 @@
 
   (define (window-workspace w) (car (window-get w 'workspaces)))
 
-  (define (workspace-windows ignore)
+  (define (workspace-windows #!optional ignore)
     (remove-if (lambda (w) (or (equal w ignore) (window-ignored-p w)))
                (window-order current-workspace)))
 
@@ -51,6 +52,8 @@
     (resize-frame-to w width height)
     (move-window-to w x y)
     (window-order-push w))
+
+  (define (focus-window w) (window-order-push w))
 
   (define (align-workspace-windows)
     (interactive)

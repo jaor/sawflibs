@@ -15,6 +15,8 @@
 
 (define-structure sawflibs.tile.tall
     (export tall-tiling
+            tall-rotate-left
+            tall-rotate-right
             increase-max-windows
             decrease-max-windows)
     (open rep
@@ -28,7 +30,36 @@
     (register-workspace-tiler n
                               tall-tiler
                               (list width top bottom gap max)
-                              auto))
+                              auto
+                              'tall-tiler))
+
+  (define (tall-tiler master ignore)
+    (let ((windows (workspace-windows ignore)))
+      (when (> (length windows) 0)
+        (let* ((master (or master (input-focus) (car windows)))
+               (master (if (eq master ignore) (car windows) master))
+               (children (remove master windows)))
+          (do-tile master children)))))
+
+  (define (do-tile master children)
+    (let* ((lc (length children))
+           (cno (if (> (setting 4) 1) (min (1- (setting 4)) lc) lc))
+           (groups (reverse (group-by children cno)))
+           (tm (setting 1))
+           (bm (setting 2))
+           (gap (setting 3))
+           (m-width (master-width (setting 0)))
+           (c-height (child-height cno tm bm))
+           (c-width (scr-width m-width (* 3 gap) 1)))
+      (mapc (lambda (g)
+              (push-children (reverse g)
+                             (+ m-width (* 2 gap))
+                             (scr-height c-height bm)
+                             (if (= (length g) cno) tm -1)
+                             c-width
+                             c-height))
+            groups)
+      (push-window master gap tm m-width (scr-height tm bm))))
 
   (define (master-width f) (floor (1- (/ (scr-width) f))))
 
@@ -41,31 +72,6 @@
     (when (not (null children))
       (push-window (car children) x (top-y) w dy)
       (push-children (cdr children) x (- y dy) min-y w dy)))
-
-  (define (tall-tiler master ignore)
-    (let ((windows (workspace-windows ignore)))
-      (when (> (length windows) 0)
-        (let* ((master (or master (input-focus) (car windows)))
-               (master (if (eq master ignore) (car windows) master))
-               (children (remove master windows))
-               (lc (length children))
-               (cno (if (> (setting 4) 1) (min (1- (setting 4)) lc) lc))
-               (groups (reverse (group-by children cno)))
-               (tm (setting 1))
-               (bm (setting 2))
-               (gap (setting 3))
-               (m-width (master-width (setting 0)))
-               (c-height (child-height cno tm bm))
-               (c-width (scr-width m-width (* 3 gap) 1)))
-          (mapc (lambda (g)
-                  (push-children (reverse g)
-                                 (+ m-width (* 2 gap))
-                                 (scr-height c-height bm)
-                                 (if (= (length g) cno) tm -1)
-                                 c-width
-                                 c-height))
-                groups)
-          (push-window master gap tm m-width (scr-height tm bm))))))
 
   (define (ws-inc-max ws delta)
     (let ((old (setting 4 #f ws)))
@@ -87,4 +93,26 @@
 
   (define (decrease-max-windows)
     (interactive)
-    (change-max-windows -1)))
+    (change-max-windows -1))
+
+  (define (tall-rotate-left)
+    (interactive)
+    (when (eq 'tall-tiler (current-tiler-name))
+      (let* ((windows (workspace-windows))
+             (first (car windows))
+             (rest (cdr windows))
+             (master (car rest))
+             (children (reverse (cons first (reverse (cdr rest))))))
+        (do-tile master children)
+        (focus-window master))))
+
+  (define (tall-rotate-right)
+    (interactive)
+    (when (eq 'tall-tiler (current-tiler-name))
+      (let* ((windows (workspace-windows))
+             (first (car windows))
+             (rest (cdr windows))
+             (master (last rest))
+             (children (cons first (remove master rest))))
+        (do-tile master children)
+        (focus-window master)))))
