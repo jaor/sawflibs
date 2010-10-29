@@ -102,7 +102,7 @@
              (first (car windows))
              (rest (cdr windows))
              (master (car rest))
-             (children (reverse (cons first (reverse (cdr rest))))))
+             (children (append (cdr rest) (list first))))
         (do-tile master children)
         (focus-window master))))
 
