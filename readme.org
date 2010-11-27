@@ -62,9 +62,11 @@
    piping to its standard input a list of currently active namespaces
    and the title of the currently focused window. The function also
    accepts the following keyword arguments:
-   - =width= Maximum width of the displayed window title
-   - =foreground= Foreground color for workspace names
-   - =highlight= Highlight color for current workspace name
+     - =width= Maximum width of the displayed window title
+     - =foreground= Foreground color for workspace names
+     - =highlight= Highlight color for current workspace name
+   If an xmobar is already running, =activate-xmobar= will kill it
+   before starting the new one.
 
 ** sawflibs.util
 

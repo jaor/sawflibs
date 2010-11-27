@@ -36,9 +36,11 @@
            (ws (ws-string)))
        (format #f "%s %s" ws name)))
 
-  (define %xmobar-proc (make-process))
+  (define %xmobar-proc nil)
 
   (define (start-xmobar cfg)
+    (when %xmobar-proc (kill-process %xmobar-proc))
+    (setq %xmobar-proc (make-process))
     (start-process %xmobar-proc "xmobar" cfg))
 
   (define (output-ws-status #!optional w ign)
