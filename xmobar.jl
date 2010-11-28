@@ -37,13 +37,14 @@
 
   (define %xmobar-proc nil)
 
+  (define (output-ws-status w)
+    (format %xmobar-proc "%s\n" (status-string w)))
+
   (define (start-xmobar cfg)
     (when %xmobar-proc (kill-process %xmobar-proc))
     (setq %xmobar-proc (make-process))
-    (start-process %xmobar-proc "xmobar" cfg))
-
-  (define (output-ws-status w)
-    (format %xmobar-proc "%s\n" (status-string w)))
+    (start-process %xmobar-proc "xmobar" cfg)
+    (output-ws-status (input-focus)))
 
   (define (focus-hook w #!rest ign)
     (output-ws-status w))
