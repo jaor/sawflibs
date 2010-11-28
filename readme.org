@@ -40,7 +40,7 @@
 
    Sample usage:
 
-   #+begin_src sawfish
+   #+BEGIN_SRC
      (require 'sawflibs.tile)
      (tall-tiling 3 #:width 2 #:top 0 #:bottom 1 #:gap 1 #:max 3)
      (tall-tiling 1 #:width 3 #:top 20 #:bottom 3 #:gap 1 #:max 2 #:auto #f)
@@ -54,7 +54,7 @@
                 "Super-=" 'increase-max-windows
                 "Super--" 'decrease-max-windows
                 "Super-Space" 'next-tiling)
-   #+end_src
+   #+END_SRC
 
 ** sawfilbs.xmobar
    This module exports one procedure, =activate-xmobar=, which takes the
