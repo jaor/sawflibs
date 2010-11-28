@@ -43,12 +43,8 @@
     (setq %xmobar-proc (make-process))
     (start-process %xmobar-proc "xmobar" cfg))
 
-  (define (output-ws-status #!optional w ign)
+  (define (output-ws-status #!optional w #!rest ign)
     (format %xmobar-proc "%s\n" (status-string w)))
-
-  (define %timer (make-timer (lambda (tm)
-                               (output-ws-status)
-                               (set-timer tm))))
 
   (define (activate-xmobar cfg #!key
                            (width 80)
@@ -59,5 +55,4 @@
     (setq %hilite highlight)
     (start-xmobar cfg)
     (add-hook 'focus-in-hook output-ws-status)
-    (add-hook 'window-state-change-hook output-ws-status)
-    (set-timer %timer 1)))
+    (add-hook 'property-notify-hook output-ws-status)))
