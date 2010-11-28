@@ -30,10 +30,9 @@
         (concat (substring s 0 (- m 3)) "...")
       s))
 
-  (define (status-string #!optional w)
-    (let* ((w (or w (input-focus)))
-           (name (adjust-width (if w (window-name w) "") %max-width))
-           (ws (ws-string)))
+  (define (status-string w)
+    (let ((name (adjust-width (if w (window-name w) "") %max-width))
+          (ws (ws-string)))
        (format #f "%s %s" ws name)))
 
   (define %xmobar-proc nil)
@@ -43,8 +42,17 @@
     (setq %xmobar-proc (make-process))
     (start-process %xmobar-proc "xmobar" cfg))
 
-  (define (output-ws-status #!optional w #!rest ign)
+  (define (output-ws-status w)
     (format %xmobar-proc "%s\n" (status-string w)))
+
+  (define (focus-hook w #!rest ign)
+    (output-ws-status w))
+
+  (define (property-hook w #!rest ign)
+    (when (eq w (input-focus)) (output-ws-status w)))
+
+  (define (enter-ws-hook wsl)
+    (when (workspace-empty-p (car wsl)) (output-ws-status nil)))
 
   (define (activate-xmobar cfg #!key
                            (width 80)
@@ -54,5 +62,6 @@
     (setq %foreground foreground)
     (setq %hilite highlight)
     (start-xmobar cfg)
-    (add-hook 'focus-in-hook output-ws-status)
-    (add-hook 'property-notify-hook output-ws-status)))
+    (add-hook 'focus-in-hook focus-hook)
+    (add-hook 'property-notify-hook property-hook)
+    (add-hook 'enter-workspace-hook enter-ws-hook)))
