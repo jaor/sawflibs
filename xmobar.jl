@@ -61,7 +61,8 @@
     (setq %max-width width)
     (setq %foreground foreground)
     (setq %hilite highlight)
-    (start-xmobar cfg)
-    (add-hook 'focus-in-hook focus-hook)
-    (add-hook 'property-notify-hook property-hook)
-    (add-hook 'enter-workspace-hook enter-ws-hook)))
+    (unless %xmobar-proc
+      (add-hook 'focus-in-hook focus-hook)
+      (add-hook 'property-notify-hook property-hook)
+      (add-hook 'enter-workspace-hook enter-ws-hook))
+    (start-xmobar cfg)))
