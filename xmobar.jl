@@ -55,6 +55,9 @@
   (define (enter-ws-hook wsl)
     (when (workspace-empty-p (car wsl)) (output-ws-status nil)))
 
+  (define (remove-from-ws-hook w wsl #!rest ign)
+    (enter-ws-hook wsl))
+
   (define (activate-xmobar cfg #!key
                            (width 80)
                            (highlight "lightgoldenrod3")
@@ -65,5 +68,6 @@
     (unless %xmobar-proc
       (add-hook 'focus-in-hook focus-hook)
       (add-hook 'property-notify-hook property-hook)
-      (add-hook 'enter-workspace-hook enter-ws-hook))
+      (add-hook 'enter-workspace-hook enter-ws-hook)
+      (add-hook 'remove-from-workspace-hook remove-from-ws-hook))
     (start-xmobar cfg)))
