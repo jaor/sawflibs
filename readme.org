@@ -6,6 +6,7 @@
 
    Tilings for your workspaces. These are the exported interactive
    commands:
+
    - =tile-workspace= Tiles the current workspace with the active,
      registered tiling, if any.
    - =next-tiling= Cycles through available tilings for this workspace.
@@ -57,16 +58,26 @@
    #+END_SRC
 
 ** sawfilbs.xmobar
-   This module exports one procedure, =activate-xmobar=, which takes the
-   name of an Xmobar configuration file and starts an xmobar instance,
-   piping to its standard input a list of currently active namespaces
-   and the title of the currently focused window. The function also
-   accepts the following keyword arguments:
+   This module exports two procedures:
+
+     =- activate-xmobar=, which takes the name of an Xmobar
+       configuration file and starts an xmobar instance, piping to its
+       standard input a list of currently active namespaces and the
+       title of the currently focused window. If an xmobar is already
+       running, =activate-xmobar= will kill it before starting the new
+       one.
+
+     - =activate-xmobar-prop=, which takes a symbol representing an X
+       atom name, and sets the corresponding X property to the value
+       described above. This one is useful is you use =XMonadProp=
+       (instead of =StdinReader=) in your xmobar configuration (in which
+       case you will pass '_XMONAD_LOG as the property to be set.
+
+   Both procedures accept the following keyword arguments:
+
      - =width= Maximum width of the displayed window title
      - =foreground= Foreground color for workspace names
      - =highlight= Highlight color for current workspace name
-   If an xmobar is already running, =activate-xmobar= will kill it
-   before starting the new one.
 
 ** sawflibs.util
 

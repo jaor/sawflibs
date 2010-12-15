@@ -1,10 +1,12 @@
 (define-structure sawflibs.xmobar
-  (export activate-xmobar)
+  (export activate-xmobar
+          activate-xmobar-prop)
 
   (open rep
         rep.system
         rep.io.processes
         rep.io.timers
+        sawfish.wm.misc
         sawfish.wm.windows
         sawfish.wm.workspace)
 
@@ -36,9 +38,12 @@
        (format #f "%s %s" ws name)))
 
   (define %xmobar-proc nil)
+  (define %xmobar-prop nil)
 
   (define (output-ws-status w)
-    (format %xmobar-proc "%s\n" (status-string w)))
+    (let ((txt (status-string w)))
+      (when %xmobar-prop (set-x-property 'root %xmobar-prop txt 'ATOM 8))
+      (when %xmobar-proc (format %xmobar-proc "%s\n" txt))))
 
   (define (start-xmobar cfg)
     (when %xmobar-proc (kill-process %xmobar-proc))
@@ -49,8 +54,10 @@
   (define (focus-hook w #!rest ign)
     (output-ws-status w))
 
-  (define (property-hook w #!rest ign)
-    (when (eq w (input-focus)) (output-ws-status w)))
+  (define (property-hook w prop #!rest ign)
+    (when (and (member prop '(WM_NAME _NET_WM_ICON_NAME _NET_WM_NAME))
+               (eq w (input-focus)))
+      (output-ws-status w)))
 
   (define (enter-ws-hook wsl)
     (when (workspace-empty-p (car wsl)) (output-ws-status nil)))
@@ -58,16 +65,30 @@
   (define (remove-from-ws-hook w wsl #!rest ign)
     (enter-ws-hook wsl))
 
+  (define (setup-hooks)
+    (unless (or %xmobar-proc %xmobar-prop)
+      (add-hook 'focus-in-hook focus-hook)
+      (add-hook 'property-notify-hook property-hook)
+      (add-hook 'enter-workspace-hook enter-ws-hook)
+      (add-hook 'remove-from-workspace-hook remove-from-ws-hook)))
+
+  (define (setup-text width highlight foreground)
+    (setq %max-width width)
+    (setq %foreground foreground)
+    (setq %hilite highlight))
+
   (define (activate-xmobar cfg #!key
                            (width 80)
                            (highlight "lightgoldenrod3")
                            (foreground "grey50"))
-    (setq %max-width width)
-    (setq %foreground foreground)
-    (setq %hilite highlight)
-    (unless %xmobar-proc
-      (add-hook 'focus-in-hook focus-hook)
-      (add-hook 'property-notify-hook property-hook)
-      (add-hook 'enter-workspace-hook enter-ws-hook)
-      (add-hook 'remove-from-workspace-hook remove-from-ws-hook))
-    (start-xmobar cfg)))
+    (setup-text width highlight foreground)
+    (setup-hooks)
+    (start-xmobar cfg))
+
+  (define (activate-xmobar-prop name  #!key
+                                (width 80)
+                                (highlight "lightgoldenrod3")
+                                (foreground "grey50"))
+    (setup-text width highlight foreground)
+    (setup-hooks)
+    (setq %xmobar-prop name)))
