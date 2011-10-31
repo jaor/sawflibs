@@ -34,7 +34,7 @@
            (max-y (max (scr-height (window-height (last windows)) (bottom-m))
                        min-y))
            (max-h (scr-height (top-m) (bottom-m)))
-           (dy (floor (/ (- max-y min-y) (1- (cols)))))
+           (dy (floor (/ (- max-y min-y) (max (1- (cols)) 1))))
            (dx (floor (/ (scr-width (* (1+ (cols)) (gap))) (cols)))))
       (push-column windows (gap) min-y dx dy (gap) max-h)))
 
