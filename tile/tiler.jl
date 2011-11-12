@@ -5,6 +5,7 @@
             next-tiling
             setting
             set-setting)
+
     (open rep
           rep.system
           rep.data.tables
@@ -20,11 +21,12 @@
 
   (define (forget w) (table-unset %sizes w))
 
+  (define (restore-window w)
+    (let ((s (table-ref %sizes w)))
+      (when s (apply push-window (cons w s)))))
+
   (define (restore-windows ws)
-    (mapc (lambda (w)
-            (let ((s (table-ref %sizes w)))
-              (when s (apply push-window (cons w s)))))
-          (workspace-windows ws)))
+    (mapc restore-window (workspace-windows ws)))
 
   (define (restore-sizes ws)
     (mapc (lambda (w)
@@ -63,7 +65,11 @@
 
   (define (tiling-tiler ti) (nth 0 ti))
   (define (tiling-settings ti) (nth 1 ti))
-  (define (tiling-auto-p ti) (nth 2 ti))
+
+  (define (tiling-auto-p ti w)
+    (let ((p (nth 2 ti)))
+      (if (functionp p) (p w) p)))
+
   (define (tiling-name ti) (nth 3 ti))
 
   (define (current-tiler-name) (tiling-name (tiling)))
@@ -74,7 +80,7 @@
       (when ti ((tiling-tiler ti) new-window destroyed-window))))
 
   (define (tileable-window-p w)
-    (and (tiling-auto-p (tiling (window-workspace w)))
+    (and (tiling-auto-p (tiling (window-workspace w)) w)
          (eq (window-type w) 'default)))
 
   (define (add-autotile w)

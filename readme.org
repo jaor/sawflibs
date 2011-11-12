@@ -26,8 +26,9 @@
      - =top=, =bottom= Top and bottom margins, in pixels (default: 0).
      - =gap= Spacing between adjacent windows, in pixels (default: 0).
      - =max= Maximum number of visible windows (default: 3).
-     - =auto= A boolean indicating whether tiling should happen
-       automatically whenever a new window is created (default: t).
+     - =auto= A boolean or predicate indicating whether tiling should
+       happen automatically whenever a new window is created (default:
+       =t=).
 
    - *column tile* Divide the screen in the given number of columns and
      distributed windows among them. All columns have the same width
@@ -49,6 +50,8 @@
      ;; switch among them with 'next-tiling':
      (tall-tiling 0 #:width 3 #:top 20 #:bottom 20 #:gap 1 #:max 2 #:auto #f)
      (col-tiling 0 #:cols 3 #:gap 2 #:top 40 #:bottom 20)
+     ;; here's a tiling that will only act on urxvt windows:
+     (tall-tiling 2 #:auto (lambda (w) (equal "URxvt" (window-class w))))
 
      (bind-keys global-keymap
                 "F12" 'tile-workspace
