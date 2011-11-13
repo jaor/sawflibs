@@ -9,6 +9,7 @@
     (open rep
           rep.system
           rep.data.tables
+          sawfish.wm.windows
           sawflibs.tile.utils)
 
   (define %tilers '())
@@ -109,4 +110,7 @@
   (add-hook 'after-move-hook maybe-save t)
   (add-hook 'after-resize-hook maybe-save t)
   (add-hook 'after-add-window-hook add-autotile t)
-  (add-hook 'destroy-notify-hook destroy-autotile t))
+  (add-hook 'uniconify-window-hook add-autotile t)
+  (add-hook 'iconify-window-hook destroy-autotile t)
+  (add-hook 'destroy-notify-hook destroy-autotile t)
+  (add-hook 'unmap-notify-hook destroy-autotile t))
