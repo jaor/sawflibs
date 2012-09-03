@@ -1,7 +1,9 @@
 (define-structure sawflibs.tile.tiler
     (export tile-workspace
+            untile-window
             register-workspace-tiler
             current-tiler-name
+            tileable-windows
             next-tiling
             setting
             set-setting)
@@ -24,7 +26,9 @@
 
   (define (restore-window w)
     (let ((s (table-ref %sizes w)))
-      (when s (apply push-window (cons w s)))))
+      (when s
+        (apply push-window (cons w s))
+        t)))
 
   (define (restore-windows ws)
     (mapc restore-window (workspace-windows ws)))
@@ -73,12 +77,21 @@
 
   (define (tiling-name ti) (nth 3 ti))
 
+  (define (tileable-windows #!optional ignore)
+    (let ((ws (workspace-windows ignore))
+          (tp (nth 2 (tiling))))
+      (if (functionp tp) (filter tp ws) ws)))
+
   (define (current-tiler-name) (tiling-name (tiling)))
 
   (define (tile-workspace #!optional new-window destroyed-window)
     (interactive)
     (let ((ti (tiling)))
       (when ti ((tiling-tiler ti) new-window destroyed-window))))
+
+  (define (untile-window w)
+    (interactive "%f")
+    (when (restore-window w) (tile-workspace nil w)))
 
   (define (tileable-window-p w)
     (and (tiling-auto-p (tiling (window-workspace w)) w)

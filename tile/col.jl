@@ -22,7 +22,7 @@
   (define (resize) (setting 4))
 
   (define (col-tiler focused deleted)
-    (let ((windows (workspace-windows deleted)))
+    (let ((windows (tileable-windows deleted)))
       (when (> (length windows) 0)
         (let* ((master (or focused (input-focus) (car windows)))
                (windows (cons master (delete master windows)))
