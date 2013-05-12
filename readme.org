@@ -2,7 +2,39 @@
 
   A collection of libraries for Sawfish.
 
+** sawfilbs.xmobar
+   This module exports two procedures:
+
+     =- activate-xmobar=, which takes the name of an Xmobar
+       configuration file and starts an xmobar instance, piping to its
+       standard input a list of currently active namespaces and the
+       title of the currently focused window. If an xmobar is already
+       running, =activate-xmobar= will kill it before starting the new
+       one.
+
+     - =activate-xmobar-prop=, which takes a symbol representing an X
+       atom name, and sets the corresponding X property to the value
+       described above. This one is useful is you use =XMonadProp=
+       (instead of =StdinReader=) in your xmobar configuration (in which
+       case you will pass '_XMONAD_LOG as the property to be set.
+
+   Both procedures accept the following keyword arguments:
+
+     - =width= Maximum width of the displayed window title
+     - =foreground= Foreground color for workspace names
+     - =highlight= Highlight color for current workspace name
+
+** sawflibs.util
+
+    Utility functions for rep programming.
+
+    - take N LST
+    - group-by LST N
 ** sawflibs.tile
+
+   *NOTE: a better version this module is available in sawfish since
+   version 1.9.91, see [docs
+   there](https://github.com/SawfishWM/sawfish/blob/master/lisp/sawfish/wm/tile/readme.org)*
 
    Tilings for your workspaces. These are the exported interactive
    commands:
@@ -59,32 +91,3 @@
                 "Super--" 'decrease-max-windows
                 "Super-Space" 'next-tiling)
    #+END_SRC
-
-** sawfilbs.xmobar
-   This module exports two procedures:
-
-     =- activate-xmobar=, which takes the name of an Xmobar
-       configuration file and starts an xmobar instance, piping to its
-       standard input a list of currently active namespaces and the
-       title of the currently focused window. If an xmobar is already
-       running, =activate-xmobar= will kill it before starting the new
-       one.
-
-     - =activate-xmobar-prop=, which takes a symbol representing an X
-       atom name, and sets the corresponding X property to the value
-       described above. This one is useful is you use =XMonadProp=
-       (instead of =StdinReader=) in your xmobar configuration (in which
-       case you will pass '_XMONAD_LOG as the property to be set.
-
-   Both procedures accept the following keyword arguments:
-
-     - =width= Maximum width of the displayed window title
-     - =foreground= Foreground color for workspace names
-     - =highlight= Highlight color for current workspace name
-
-** sawflibs.util
-
-    Utility functions for rep programming.
-
-    - take N LST
-    - group-by LST N
