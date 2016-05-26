@@ -1,19 +1,21 @@
 
 (define-structure sawflibs.tile.col
-    (export col-tiling)
-            ;; increase-cols
-            ;; decrease-cols)
+    (export col-tiling
+            increase-max-cols
+            decrease-max-cols)
     (open rep
           rep.system
-          sawflibs.utils
           sawfish.wm
           sawflibs.tile.tiler
           sawflibs.tile.utils)
 
-  (define (col-tiling ws #!key (top 0) (bottom 0) (cols 3) (gap 1) (auto #f) (resize #t))
+  (define (col-tiling ws #!key
+                      (top 0) (bottom 0) (cols 3) (gap 1) (auto t) (resize t))
     (register-workspace-tiler ws
                               col-tiler
-                              (list cols top bottom gap resize) auto))
+                              (list cols top bottom gap resize)
+			      auto
+			      'col-tiler))
 
   (define (cols) (setting 0))
   (define (top-m) (setting 1))
@@ -50,10 +52,24 @@
         (push-window (car ws) wx y wdx wdy)
         (push-column (cdr ws) (+ x dx g) (+ y dy) dx dy g max-h))))
 
-  (define (increase-cols)
-    (interactive)
-    #t)
+  (define (ws-col-max ws delta)
+    (let ((old (setting 0 #f ws)))
+      (when old
+        (let ((no (+ old delta)))
+          (when (> no 1)
+            (set-setting 0 no ws)
+            no)))))
 
-  (define (decrease-cols)
+  (define (change-cols delta)
+    (let ((n (ws-col-max current-workspace delta)))
+      (when n
+        (col-tiler nil nil)
+        (notify "Maximum columns set to %s" n))))
+
+  (define (increase-max-cols)
     (interactive)
-    #t))
+    (change-cols 1))
+
+  (define (decrease-max-cols)
+    (interactive)
+    (change-cols -1)))

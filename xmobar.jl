@@ -22,7 +22,7 @@
            (mapcar (lambda (n)
                      (xmobar-fg (if (equal n current-workspace) %hilite
                                   %foreground)
-                                (if (numberp n) (1+ n) n)))
+                                (if (numberp n) (mod (1+ n) 10) n)))
                    (sort (cons current-workspace
                                (remove current-workspace
                                        (all-workspaces)))))))
