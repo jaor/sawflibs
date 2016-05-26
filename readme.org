@@ -32,9 +32,8 @@
     - group-by LST N
 ** sawflibs.tile
 
-   *NOTE: A version this module is available in sawfish since version
-   1.9.91, see [docs
-   there](https://github.com/SawfishWM/sawfish/blob/master/lisp/sawfish/wm/tile/readme.org)*
+   NOTE: A version this module is available in sawfish since version
+   1.9.91, see [[https://github.com/SawfishWM/sawfish/blob/master/lisp/sawfish/wm/tile/readme.org][docs there]].
 
    Tilings for your workspaces. These are the exported interactive
    commands:
